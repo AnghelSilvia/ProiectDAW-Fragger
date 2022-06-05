@@ -1,0 +1,3 @@
+[submodule "Fragger/ClientApp"]
+	path = Fragger/ClientApp
+	url = https://github.com/AnghelSilvia/ProiectDAW-Fragger-ClientApp.git
