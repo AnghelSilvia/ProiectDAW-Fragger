@@ -10,6 +10,7 @@ namespace Fragger.Controllers
     [Route("api/notes")]
     public class NoteController : Controller
     {
+
         public static List<Note> Notes = new List<Note>
         {
             new Note { NoteId = 1, Name = "Jasmine" },
