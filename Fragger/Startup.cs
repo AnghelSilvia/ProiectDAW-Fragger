@@ -3,6 +3,7 @@ using Fragger.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -16,6 +17,9 @@ namespace Fragger
 {
     public class Startup
     {
+
+        public string SpecificOrigins = "_allowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,11 +30,17 @@ namespace Fragger
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            */
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: SpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder
+                                        .WithOrigins("localhost:5001", "https://localhost:5001", "localhost:5000", "http://localhost:5000")
+                                        .AllowAnyMethod()
+                                        .AllowAnyHeader();
+                                  });
+            });
 
             services.AddDbContext<FraggerContext>();
 
@@ -76,23 +86,18 @@ namespace Fragger
             }
 
             app.UseRouting();
+            app.UseCors(SpecificOrigins);
 
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
