@@ -24,7 +24,8 @@ namespace Fragger.Controllers
             new Perfume { PerfumeId = 2, Name = "Scandal", Description = "Descriere Scandal", ReleaseDate = new DateTime(2012, 06, 17) },
             new Perfume { PerfumeId = 3, Name = "Chanel No. 5", Description = "Descriere Chanel No.5", ReleaseDate = new DateTime(1998, 04, 13) },
             new Perfume { PerfumeId = 4, Name = "Delina", Description = "Descriere Delina", ReleaseDate = new DateTime(2017, 04, 13) },
-            new Perfume { PerfumeId = 5, Name = "Oriana", Description = "Descriere Oriana", ReleaseDate = new DateTime(2020, 07, 09) }
+            new Perfume { PerfumeId = 5, Name = "Oriana", Description = "Descriere Oriana", ReleaseDate = new DateTime(2020, 07, 09) },
+            new Perfume { PerfumeId = 6, Name = "Good Fortune", Description = "Descriere Good Fortune", ReleaseDate = new DateTime(2022, 06, 01) }
         };
         
         [HttpGet]
@@ -40,6 +41,16 @@ namespace Fragger.Controllers
             if (perfume == null)
                 return NotFound();
             return Ok(perfume);
+        }
+
+        [HttpGet("latest")]
+        public async Task<IActionResult> ReadLatest()
+        {
+            DateTime dateLatest = DateTime.Now.AddDays(-30);
+            // parfumurile lansate in ultima luna
+            var perfumes = Perfumes.Where(x => x.ReleaseDate > dateLatest);
+
+            return Ok(perfumes);
         }
 
 
